@@ -35,3 +35,16 @@ span{
 
 }
 
+button{
+    color:white;
+}
+
+
+
+.selected_index{
+    background-color: #002a5d;
+}
+
+.not_selected_index{
+    background-color: black;
+}

@@ -1,11 +1,51 @@
 
 
 
+import { useEffect, useState } from 'react';
+import { Credentials,SignupPayload } from '../types/signup'
 
 import './styles/signup.css'
 
 function Signup(){
+    const [selected,setSelected] = useState<number>(2); 
+    const [credentials,setCredentials] =useState<Credentials>({Firstname:'',
+                                                               Lastname:'',
+                                                               Username:'',
+                                                               Password:'',
+                                                               Email:''});
 
+    // async function handleClick(label:string):Promise<void> {
+    //     const payload:SignupPayload = {
+    //         headers: 'application/json',
+    //         method: 'POST',
+    //         ...credentials
+    //     }};
+
+    //     const response = await fetch();
+
+    //     if(!(response.ok)){
+
+    //     }
+
+
+
+    function SubmitButtons(){
+        const buttons = ['Free Tier','Pro Tier','Enterprise'];  
+        return(
+            <div className='Submit'>
+                {buttons.map((label,index)=>{
+                return (
+                    <button key={index} 
+                            onMouseEnter= {()=>setSelected(index)} 
+                            onClick={() =>handleClick(label)}
+                            className= {index ==selected ?"selected_index":"not_selected_index"}>
+                                {label}
+                    </button>
+                )})}
+            </div>
+        );
+        
+    }
 
 
     return (
@@ -51,11 +91,11 @@ function Signup(){
                             required/>
                 </div>
 
-                <div className='Submit'>
-                    <button type="submit">Free Tier</button>
-                    <button type="submit">Pro Tier</button>
-                    <button type="submit">Enterprise</button>
-                </div>
+                {
+                    SubmitButtons()
+                }
+
+              
 
             </form>
 
