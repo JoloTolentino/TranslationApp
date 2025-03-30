@@ -51,11 +51,14 @@ function Login () :React.JSX.Element{
     return (
         <div className='LoginContainer'>
           <h2>Welcome Back!</h2>
+
+          <div className="error">
             {missing.length > 0 && 
-                (<div className="error">
-                    Missing fields: {missing.join(', ')}
-                </div>)
+                (<>
+                    Missing fields: <span>{missing.join(', ')}</span>
+                </>)
             }
+            </div>
           <form>
             <div className='Credentials'>
                 <div>

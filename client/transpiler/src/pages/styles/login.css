@@ -7,6 +7,7 @@
     border-radius: 22px;
     height: 35vh;
     width: 40vh;
+    background-color: ghostwhite;
 }
 
 .Credentials{
@@ -34,18 +35,20 @@ button{
     border: 2px solid darkgray;
 }
 
-
-
 .Redirect{
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-
-
-
 input[type='string'],
 input[type='password'] {
     font-size: 18px;
+    background-color: whitesmoke;
+    border-radius: 3px;
+    color: black;
+}
+
+.error span {
+    color:#c00000;
 }
