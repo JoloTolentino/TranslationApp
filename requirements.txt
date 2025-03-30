@@ -1,0 +1,14 @@
+scikit-learn
+pandas
+flask
+opencv-python
+numpy
+langchain
+huggingface_hub
+torch
+sentencepiece
+flask_sqlalchemy
+flask_login
+flask_limiter
+chromadb
+psycopg2
