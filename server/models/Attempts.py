@@ -1,5 +1,5 @@
 
-from server import db
+from server.extensions import db
 from server.config import BAN_INTERVAL
 from server.config import DATE_FMT
 from server.models.Users import BANNED_USERS
@@ -38,6 +38,9 @@ class ATTEMPTS(db.Model):
     lockout_until = db.Column(db.String(30), nullable=True)
 
     def reset_attempts(self) -> None:
+        '''
+        Resets the attempts of users whenever succesful login or overwrite manually
+        '''
         self.failed_logins = 0
         self.lockout_until = None
 
@@ -76,6 +79,9 @@ class ATTEMPTS(db.Model):
 
             
     def check_valid(self) -> bool:
+        '''
+        Checks for banned users
+        '''
         if self.lockout_until:
             if self.lockout_until == 'PERMANENT':
                 return False  

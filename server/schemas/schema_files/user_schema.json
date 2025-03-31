@@ -3,10 +3,7 @@
     "title": "User",
     "type": "object",
     "properties": {
-      "uuid": {
-        "type": "string",
-        "maxLength": 50
-      },
+      
       "firstname": {
         "type": "string",
         "maxLength": 20
@@ -27,24 +24,15 @@
       "password": {
         "type": "string",
         "maxLength": 250
-      },
-      "is_online": {
-        "type": "boolean",
-        "default": false
-      },
-      "last_login": {
-        "type": ["string", "null"],
-        "maxLength": 20
       }
     },
     "required": [
-      "uuid",
+      
       "firstname",
       "lastname",
       "email",
       "username",
-      "password",
-      "is_online"
+      "password"
     ],
     "additionalProperties": false
   }

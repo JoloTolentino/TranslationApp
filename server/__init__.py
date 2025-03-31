@@ -1,5 +1,6 @@
 
 from flask import Flask,jsonify
+from server.routes import auth,v1
 from server.extensions import db,chroma_client,limiter,login_manager,logger
 from server.config import CONFIG
 from server.models.Users import USER
@@ -14,7 +15,11 @@ def create_app():
     chroma_collection = chroma_client.create_collection(name = CONFIG.CHROMA_COLLECTION)
     login_manager.init_app(app)
     limiter.init_app(app)
-    
+
+    with app.app_context():
+        
+        db.create_all()
+
     @login_manager.user_loader
     def load_user(user_id):
         return USER.query.get(int(user_id))
@@ -31,10 +36,8 @@ def create_app():
     def handle_unauthorized(e):
         return jsonify({'error': 'Unauthorized Access'}), 401
     
-
-
-    with app.app_context():
-        db.create_all()
-
+    
+    app.register_blueprint(auth)
+    app.register_blueprint(v1)
 
     return app

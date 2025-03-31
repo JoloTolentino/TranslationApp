@@ -2,7 +2,7 @@ import json
 from abc import ABC,abstractmethod
 from jsonschema.validators import validator_for
 from jsonschema.exceptions import SchemaError
-from server import logger
+from server.extensions import logger
 
 
 class JsonSchemaValidator(ABC):

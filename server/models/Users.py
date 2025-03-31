@@ -1,6 +1,6 @@
 from flask_login import UserMixin
 from datetime import datetime
-from server import db
+from server.extensions import db
 from server.config import DATE_FMT
 from werkzeug.security import generate_password_hash,check_password_hash
 

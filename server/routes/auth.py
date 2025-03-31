@@ -3,7 +3,10 @@ from flask import Blueprint,request,jsonify
 from flask_login import login_user,logout_user,login_required
 from server.models import USER,SUBSCRIPTIONS,ATTEMPTS
 from server.config import BAN_INTERVAL
+from server.schemas import UsersValidator
 import uuid
+import pdb
+
 
 
 
@@ -18,6 +21,16 @@ def login():
         return jsonify({'error': 'Method Not Allowed. Use POST instead.'}), 405
 
     data =request.get_json()
+    validator = UsersValidator(data)
+
+
+
+
+
+
+
+
+
     user = data.get('username')
     raw_password = data.get('password')
     credentials = [user,raw_password]
@@ -44,15 +57,26 @@ def login():
 
 
 
+@auth.route('/test', methods = ['GET'])
+def test():
+    return 'test'
+
+
+
 
 @auth.route('/signup', methods = ['POST'] )
 def signup():
     data = request.get_json()
+    validator = UsersValidator(data)
+
+    pdb.set_trace()
+
+
     uuid = str(uuid.uuid4()) 
 
 
 
-    
+
 
 
 

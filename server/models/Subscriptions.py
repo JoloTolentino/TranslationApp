@@ -1,5 +1,5 @@
 
-from server import db
+from server.extensions import db
 from server.config import DATE_FMT
 from sqlalchemy import Enum
 import enum
