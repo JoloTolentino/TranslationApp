@@ -11,4 +11,6 @@ flask_sqlalchemy
 flask_login
 flask_limiter
 chromadb
-psycopg2
+psycopg2-binary
+
+# psycopg2

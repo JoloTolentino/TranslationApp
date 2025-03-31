@@ -7,8 +7,6 @@ import configparser
 import chromadb
 
 
-
-
 db = SQLAlchemy()
 chroma_client = chromadb.Client()
 limiter = Limiter(key_func=get_remote_address)
@@ -33,5 +31,5 @@ logger.addHandler(error_handler)
 
 
 
-CONFIG = configparser.ConfigParser()
-CONFIG.read('config.ini')
+CFG = configparser.ConfigParser()
+CFG.read('config.ini')

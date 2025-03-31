@@ -4,12 +4,7 @@ from server.extensions import db,chroma_client,limiter,login_manager,logger
 from server.config import CONFIG
 from server.models.Users import USER
 from server.models.Subscriptions import SUBSCRIPTIONS
-
-
-
-
-
-
+from jsonschema.exceptions import SchemaError
 
 def create_app():
     logger.info('Creating App')
@@ -34,8 +29,9 @@ def create_app():
     
     @app.errorhandler(401)
     def handle_unauthorized(e):
-        return jsonify({'error': 'Unauthorized Access'}), 405
+        return jsonify({'error': 'Unauthorized Access'}), 401
     
+
 
     with app.app_context():
         db.create_all()
