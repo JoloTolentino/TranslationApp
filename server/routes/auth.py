@@ -3,17 +3,16 @@ from flask import Blueprint,request,jsonify
 from flask_login import login_user,logout_user,login_required
 from server.models import USER,SUBSCRIPTIONS,ATTEMPTS
 from server.config import BAN_INTERVAL
-from server.schemas import UsersValidator
+from server.schemas.ModelSchemaValidator import (
+    UsersSchemaValidator,
+    SubscriptionsSchemaValidator,
+    SignupSchemaValidator
+)
 import uuid
 import pdb
 
-
-
-
 auth = Blueprint('auth', __name__)
 
-def check_missing_credentials(credentials: list[str]) -> bool:
-    return not all(credentials)
 
 @auth.route('/login', methods= ['POST'])
 def login():
@@ -21,9 +20,9 @@ def login():
         return jsonify({'error': 'Method Not Allowed. Use POST instead.'}), 405
 
     data =request.get_json()
-    validator = UsersValidator(data)
+    validator = UsersSchemaValidator(data)
 
-
+    pdb.set_trace()
 
 
 
@@ -67,11 +66,10 @@ def test():
 @auth.route('/signup', methods = ['POST'] )
 def signup():
     data = request.get_json()
-    validator = UsersValidator(data)
-
+    
+    validator = UsersSchemaValidator(data)
+    
     pdb.set_trace()
-
-
     uuid = str(uuid.uuid4()) 
 
 

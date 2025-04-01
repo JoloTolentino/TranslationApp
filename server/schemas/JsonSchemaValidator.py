@@ -48,5 +48,6 @@ class JsonSchemaValidator(ABC):
         self._data = None
 
     @abstractmethod
-    def _validate(self):
+    def validate(self):
         pass
+
