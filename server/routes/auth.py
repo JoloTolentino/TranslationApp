@@ -8,6 +8,11 @@ from server.schemas.ModelSchemaValidator import (
     SubscriptionsSchemaValidator,
     SignupSchemaValidator
 )
+from server.utils.santize import (
+    clean_username,
+    clean_email,
+    clean_name
+)
 import uuid
 import pdb
 
@@ -34,8 +39,7 @@ def login():
     raw_password = data.get('password')
     credentials = [user,raw_password]
 
-    if check_missing_credentials(credentials):
-        return jsonify({'error': 'Incomplete credentials'}),400
+    
     
     user_details = USER.query.filter_by(username = user).first()
 
@@ -56,30 +60,37 @@ def login():
 
 
 
-@auth.route('/test', methods = ['GET'])
-def test():
-    return 'test'
-
-
-
 
 @auth.route('/signup', methods = ['POST'] )
 def signup():
     data = request.get_json()
+    validator = UsersSchemaValidator(data) 
+    if not validator.valid:
+        payload = {
+            key:val for key, val in  {
+                'invalid_keys': validator.invalid,
+                'missing_keys': validator.missing
+            }
+        }
+        return jsonify(payload), 400
+
+    #sanitize inputs 
+    raw_password = data.pop('password')
+    subscription = data.pop('subscription')
+
+    data['firstname'] = clean_name(data['firstname'])
+    data['lastname'] = clean_name(data[''])
+    data['email'] = clean_email(data['email'])
+    data['uuid'] = str(uuid.uuid4()) 
     
-    validator = UsersSchemaValidator(data)
+    new_user = USER(**data)
+    new_user.set_password(raw_password)
+    new_user_attempts = ATTEMPTS(uuid=data['uuid'])
     
-    pdb.set_trace()
-    uuid = str(uuid.uuid4()) 
 
 
 
 
-
-
-
-
-    
 
 
 @auth.route('/logout')

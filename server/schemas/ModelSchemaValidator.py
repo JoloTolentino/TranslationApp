@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 
 from jsonschema import validate, ValidationError
 from jsonschema import Draft7Validator
@@ -7,13 +6,10 @@ from server.config import CONFIG
 from server.schemas.DataSchemaMixin import DataSchemaMixin
 
 '''
-    props:
-
-
-
+    properties:
+        valid - checks if the input data is valid
+        missing - checks for missing keys provided a 
 '''
-
-
 class SignupSchemaValidator(DataSchemaMixin, JsonSchemaValidator):
     def __init__(self, data) -> None:
         path = CONFIG.SIGNUP_SCHEMA
