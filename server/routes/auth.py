@@ -1,8 +1,3 @@
-
-from flask import Blueprint,request,jsonify
-from flask_login import login_user,logout_user,login_required
-from server.models import USER,SUBSCRIPTIONS,ATTEMPTS
-from server.config import BAN_INTERVAL
 from server.schemas.ModelSchemaValidator import (
     UsersSchemaValidator,
     SubscriptionsSchemaValidator,
@@ -13,10 +8,24 @@ from server.utils.santize import (
     clean_email,
     clean_name
 )
+from server.models import USER,SUBSCRIPTIONS,ATTEMPTS
+from server.config import BAN_INTERVAL
+from server.extensions import logging
+from server.utils.database import Postgres
+from flask import Blueprint,request,jsonify
+from flask_login import login_user,logout_user,login_required
+from pprint import pprint
 import uuid
 import pdb
 
+
+
+
 auth = Blueprint('auth', __name__)
+
+
+
+
 
 
 @auth.route('/login', methods= ['POST'])
@@ -77,19 +86,32 @@ def signup():
     #sanitize inputs 
     raw_password = data.pop('password')
     subscription = data.pop('subscription')
+    
+    #log everything except password and subscription tier
+    logging.debug(f'User Data : {pprint(data)}')
 
+    data['username'] = clean_username(data['username'])
     data['firstname'] = clean_name(data['firstname'])
     data['lastname'] = clean_name(data[''])
     data['email'] = clean_email(data['email'])
     data['uuid'] = str(uuid.uuid4()) 
-    
+
+    logging.info(f'Processing user :[{data['uuid']}]')
+
+    #create entries in the db
     new_user = USER(**data)
     new_user.set_password(raw_password)
     new_user_attempts = ATTEMPTS(uuid=data['uuid'])
-    
-
-
-
+    new_user_subscription = SUBSCRIPTIONS(uuid=data['uuid'])
+    subscription_status = new_user_subscription.subscribe_tier(subscription)
+    services = {
+        'USER': new_user,
+        'ATTEMPTS':new_user_attempts,
+        'SUBSCRIPTIONS':new_user_subscription
+    }
+    response,status_code = Postgres.add_services(services)
+    response['subscription_status'] = subscription_status
+    return response,status_code
 
 
 

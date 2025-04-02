@@ -1,6 +1,7 @@
 
 from server.extensions import db
 from server.config import DATE_FMT
+from server.utils.santize import clean_tier
 from sqlalchemy import Enum
 import enum
 from datetime import datetime,timedelta
@@ -45,10 +46,8 @@ class SUBSCRIPTIONS(db.Model):
 
     def subscribe_tier(self,tier:str) -> dict:
         
-        if tier not in [Tiers.FREE.value,
-                        Tiers.PRO.value,
-                        Tiers.ENTERPRISE.value]:
-            
+        tier = clean_tier(tier)        
+        if tier is None:
             return {'error': 'Invalid Tier'}
         
         free_member = self.tier == Tiers.FREE
