@@ -21,24 +21,15 @@ import pdb
 
 auth = Blueprint('auth', __name__)
 
-def get_invalid_keys(validator):
-    if not validator.valid:
-        payload = {
-            'invalid_keys': validator.invalid,
-            'missing_keys': validator.missing
-        }
-        return jsonify(payload)
-    return None
 
 
 @auth.route('/login', methods= ['POST'])
 def login():
     data =request.get_json()
     validator = UsersSchemaValidator(data)
-    invalid_keys = get_invalid_keys(validator)
-    
-    if invalid_keys:  
-        return invalid_keys,400   
+    errors = validator.error
+    if errors:  
+        return errors,400   
 
     raw_password = data.pop('password')
     data['username'] = clean_username(data['username'])
@@ -51,11 +42,12 @@ def login():
         return jsonify({**response, 'error': 'invalid password'}),400
 
     if not user_attemtps.check_valid():
-        return jsonify({'error':f'{data['username']} is locked out till {user_attemtps.lockout_until}'}),401
+        return jsonify({"error": f"{data['username']} is locked out till {user_attemtps.lockout_until}"}), 401
+
 
     user_attemtps.reset_attempts()
     login_user()
-    return jsonify({'success': f'{data['username']} succesfully loggedin'})
+    return jsonify({'success': f'{data["username"]} succesfully loggedin'})
 
 
 
@@ -64,9 +56,9 @@ def login():
 def signup():
     data = request.get_json()
     validator = SignupSchemaValidator(data) 
-    invalid_keys = get_invalid_keys(validator)
-    if invalid_keys:  
-        return invalid_keys,400   
+    errors = validator.error
+    if errors:
+        return errors,400
 
     #sanitize inputs 
     raw_password = data.pop('password')
@@ -81,7 +73,7 @@ def signup():
     data['email'] = clean_email(data['email'])
     data['uuid'] = str(uuid.uuid4()) 
 
-    logging.info(f'Processing user :[{data['uuid']}]')
+    logging.info(f'Processing user :[{data["uuid"]}]')
 
     #create entries in the db
     new_user = USER(**data)

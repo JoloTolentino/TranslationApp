@@ -7,7 +7,7 @@ from server.models.Users import USER
 from server.models.Subscriptions import SUBSCRIPTIONS
 from jsonschema.exceptions import SchemaError
 
-def create_app():
+def create_app(*args,**kwargs):
     logger.info('Creating App')
     app = Flask(__name__)
     app.config.from_object(CONFIG)

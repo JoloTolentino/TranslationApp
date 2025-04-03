@@ -1,6 +1,6 @@
 import re
 import html
-from server.models.Subscriptions import Tiers
+# from server.models.Subscriptions import Tiers
 
 def clean_username(username: str) -> str:
     """Strip and remove non-alphanumeric characters (except underscores)."""
@@ -24,7 +24,7 @@ def clean_text(text: str) -> str:
 def clean_tier(subscription: str) -> str | None:
     """Removes leading, lagging  white space and checks valid tiers"""
     subscription = clean_text(subscription).lower()
-    tiers = [Tiers.FREE,Tiers.PRO,Tiers.ENTERPRISE]
+    tiers = ['free','pro','enterprise']
     return subscription if subscription in tiers else None
 
 

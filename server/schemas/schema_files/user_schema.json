@@ -27,7 +27,6 @@
       }
     },
     "required": [
-      
       "firstname",
       "lastname",
       "email",
