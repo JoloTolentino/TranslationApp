@@ -12,6 +12,17 @@ class CONFIG:
     PG_env_addr = CFG['POSTGRES']['ENV_ADDRESS']
     PG_DB = CFG['POSTGRES']['DB']
 
+
+    ENV = CFG['STAGE']['ENV']
+    
+    URLS = {
+        'DEV': CFG['URL']['DEV'],
+        'STAGING': CFG['URL']['STAGE'],
+        'PRODUCTION':CFG['URL']['PRODUCTION']
+    }
+    
+    BASE_URL= URLS[ENV]
+
     CHROMA_COLLECTION = CFG['CHROMA']['COLLECTION']
 
     SIGNUP_SCHEMA = CFG['SCHEMA_PATHS']['SIGNUP_VALIDATION']

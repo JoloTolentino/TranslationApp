@@ -19,42 +19,30 @@ import uuid
 import pdb
 
 
-
-
 auth = Blueprint('auth', __name__)
 
-
-
-
+def get_invalid_keys(validator):
+    if not validator.valid:
+        payload = {
+            'invalid_keys': validator.invalid,
+            'missing_keys': validator.missing
+        }
+        return jsonify(payload)
+    return None
 
 
 @auth.route('/login', methods= ['POST'])
 def login():
-    if request.method != 'POST':
-        return jsonify({'error': 'Method Not Allowed. Use POST instead.'}), 405
-
     data =request.get_json()
     validator = UsersSchemaValidator(data)
-
-    pdb.set_trace()
-
-
-
-
-
-
-
-    user = data.get('username')
-    raw_password = data.get('password')
-    credentials = [user,raw_password]
-
+    invalid_keys = get_invalid_keys(validator)
     
-    
-    user_details = USER.query.filter_by(username = user).first()
+    if invalid_keys:  
+        return invalid_keys,400   
 
-    if not user_details:
-        return jsonify({'error': 'Invalid username and password'}),400
-    
+    raw_password = data.pop('password')
+    data['username'] = clean_username(data['username'])
+    user_details = USER.query.filter_by(username = data['username']).first()
     user_uuid = user_details.uuid
     user_attemtps = ATTEMPTS.query.filter_by(uuid = user_uuid)
 
@@ -62,10 +50,12 @@ def login():
         response = user_attemtps.increment_attempt()
         return jsonify({**response, 'error': 'invalid password'}),400
 
+    if not user_attemtps.check_valid():
+        return jsonify({'error':f'{data['username']} is locked out till {user_attemtps.lockout_until}'}),401
+
     user_attemtps.reset_attempts()
-
-
-    return jsonify({'success': f'{user} succesfully loggedin'})
+    login_user()
+    return jsonify({'success': f'{data['username']} succesfully loggedin'})
 
 
 
@@ -73,15 +63,10 @@ def login():
 @auth.route('/signup', methods = ['POST'] )
 def signup():
     data = request.get_json()
-    validator = UsersSchemaValidator(data) 
-    if not validator.valid:
-        payload = {
-            key:val for key, val in  {
-                'invalid_keys': validator.invalid,
-                'missing_keys': validator.missing
-            }
-        }
-        return jsonify(payload), 400
+    validator = SignupSchemaValidator(data) 
+    invalid_keys = get_invalid_keys(validator)
+    if invalid_keys:  
+        return invalid_keys,400   
 
     #sanitize inputs 
     raw_password = data.pop('password')

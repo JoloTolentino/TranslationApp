@@ -17,7 +17,6 @@ def create_app():
     limiter.init_app(app)
 
     with app.app_context():
-        
         db.create_all()
 
     @login_manager.user_loader
