@@ -26,19 +26,6 @@ text = "Hello, how are you?"
 
 # Tokenize and translate
 
-
-
-
-
-
 tokens = tokenizer.prepare_seq2seq_batch([text], return_tensors="pt")
 translated = model.generate(**tokens) # returns torch.tensor
-
-# Decode and print
-
-
-#embedding 
-
 translated_text = tokenizer.decode(translated[0], skip_special_tokens=True)
-pdb.set_trace()
-print(translated_text)
