@@ -15,10 +15,10 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install autopep8
+      - name: Install black
         run: |
-          pip install autopep8
+          pip install black
 
-      - name: Check code formatting with autopep8
+      - name: Check code formatting with black
         run: |
-          autopep8 . --recursive --diff --exit-code
+          black . --check --diff
