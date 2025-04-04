@@ -1,42 +1,38 @@
 from flask import jsonify
-from jsonschema import Draft7Validator,ValidationError,FormatChecker
+from jsonschema import Draft7Validator, ValidationError, FormatChecker
 import pdb
+
 
 class DataSchemaMixin:
     @property
     def valid(self) -> bool:
-        return getattr(self, '_valid', False)
-    
+        return getattr(self, "_valid", False)
+
     @property
     def error(self):
-        return getattr(self, '_error')
-    
+        return getattr(self, "_error")
+
     @property
-    def missing(self) ->list[str] | list[None] :
-        return getattr(self,'_missing',[])
+    def missing(self) -> list[str] | list[None]:
+        return getattr(self, "_missing", [])
 
     @property
     def invalid(self) -> list[str] | list[None]:
-        return getattr(self,'_invalid',[])
-
+        return getattr(self, "_invalid", [])
 
     @valid.setter
     def valid(self, val: bool) -> None:
         self._valid = val
 
     @error.setter
-    def error(self, val: dict[str,list]) -> None:
+    def error(self, val: dict[str, list]) -> None:
         self._error = val
 
     def get_invalid_keys(self):
         if not self.valid:
-            payload = {
-                'invalid_keys': self.invalid,
-                'missing_keys': self.missing
-            }
+            payload = {"invalid_keys": self.invalid, "missing_keys": self.missing}
             return jsonify(payload)
         return None
-
 
     def _collect_errors(self, data: dict, schema: dict):
         validator = Draft7Validator(schema, format_checker=FormatChecker())
@@ -45,13 +41,15 @@ class DataSchemaMixin:
         self._missing = []
         self._invalid = {}
 
-        _path_delim = '/'
-        
+        _path_delim = "/"
+
         for error in errors:
-            if error.validator in ('type', 'format'):
-                self._invalid['Invalid Format'] = self._invalid.get('Invalid Format', [])
+            if error.validator in ("type", "format"):
+                self._invalid["Invalid Format"] = self._invalid.get(
+                    "Invalid Format", []
+                )
                 full_path = _path_delim.join(str(p) for p in error.path)
-                self._invalid['Invalid Format'].append({full_path: error.message})
+                self._invalid["Invalid Format"].append({full_path: error.message})
 
             elif error.validator == "required":
                 for missing_key in error.message.split("'")[1::2]:
@@ -61,13 +59,10 @@ class DataSchemaMixin:
             elif error.validator == "additionalProperties":
                 full_path = "/".join(str(p) for p in error.path)
                 additional_key = error.message.split("'")[1]  # fallback if no .params
-                key = f'{full_path}/{additional_key}' if full_path else additional_key
-                self._invalid['Additional Keys'] = self._invalid.get('Additional Keys', [])
-                self._invalid['Additional Keys'].append({key: additional_key})
+                key = f"{full_path}/{additional_key}" if full_path else additional_key
+                self._invalid["Additional Keys"] = self._invalid.get(
+                    "Additional Keys", []
+                )
+                self._invalid["Additional Keys"].append({key: additional_key})
 
-        
         self.error = self.get_invalid_keys()
-    
-
-    
-       

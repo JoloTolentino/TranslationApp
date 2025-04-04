@@ -1,9 +1,9 @@
-
-from server.extensions import logging,db
-from server.models import ATTEMPTS,SUBSCRIPTIONS,USER
-from typing import Dict,Union
+from server.extensions import logging, db
+from server.models import ATTEMPTS, SUBSCRIPTIONS, USER
+from typing import Dict, Union
 from flask_sqlalchemy.model import Model
 from sqlalchemy.exc import IntegrityError
+
 
 class Postgres:
     @staticmethod
@@ -21,4 +21,3 @@ class Postgres:
             db.session.rollback()
             logging.error(f"[DB] Unexpected error: {e}")
             return {"error": "Unexpected server error"}, 500
-
