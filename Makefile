@@ -1,9 +1,4 @@
 
-
-
-
-
-
 remove_test:
 	docker rm $(docker ps -a | grep test | awk '{print $1}')
 
