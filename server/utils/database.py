@@ -5,6 +5,8 @@ from flask_sqlalchemy.model import Model
 from sqlalchemy.exc import IntegrityError
 from pprint import pprint
 import pdb
+
+
 class Postgres:
     """
     Postgress Service to serve the entire flask project
@@ -87,7 +89,7 @@ class Postgres:
             db.session.rollback()
             logger.info("FAILED service values:")
             for name, service in services.items():
-                logger.info(f"{name}: {service}") 
+                logger.info(f"{name}: {service}")
             logger.error(f"[DB] IntegrityError: {e}")
             return {"error": "Database constraint violation"}, 409
         except Exception as e:

@@ -1,4 +1,4 @@
-from .Subscriptions import SUBSCRIPTIONS,Tiers
+from .Subscriptions import SUBSCRIPTIONS, Tiers
 from .Users import USER
 from .Attempts import ATTEMPTS
 

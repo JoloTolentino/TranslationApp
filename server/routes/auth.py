@@ -4,7 +4,7 @@ from server.schemas.ModelSchemaValidator import (
     SignupSchemaValidator,
 )
 from server.utils.santize import clean_username, clean_email, clean_name
-from server.models import USER, SUBSCRIPTIONS, ATTEMPTS,Tiers
+from server.models import USER, SUBSCRIPTIONS, ATTEMPTS, Tiers
 from server.config import BAN_INTERVAL
 from server.extensions import logger
 from server.utils.database import Postgres
@@ -56,9 +56,8 @@ def login():
 def signup():
     data = json.loads(request.get_json()["body"])
 
-    #generate uuid  per user 
+    # generate uuid  per user
     data["uuid"] = str(uuid.uuid4())
-
 
     logger.info(f'Signup for :{data["uuid"]} in progress')
     subscription = data.pop("subscription")

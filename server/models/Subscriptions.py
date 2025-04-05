@@ -29,10 +29,8 @@ class Tiers(enum.Enum):
         return tier_map[tier]
 
     @staticmethod
-    def get_tier(tier_val:str) -> Enum:
-        tier_map = {
-            tier.value : tier for tier in list(Tiers)
-        }
+    def get_tier(tier_val: str) -> Enum:
+        tier_map = {tier.value: tier for tier in list(Tiers)}
         return tier_map.get(tier_val) if tier_map.get(tier_val) else Tiers.FREE
 
 
