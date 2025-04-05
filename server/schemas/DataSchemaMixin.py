@@ -12,7 +12,7 @@ class DataSchemaMixin:
     def error(self):
         return (
             getattr(self, "_error")
-            if self._error["invalid_keys"] and self.error["missing_keys"]
+            if self._error["invalid_keys"] or self._error["missing_keys"]
             else None
         )
 

@@ -4,15 +4,15 @@ import pytest
 
 def test_signup_valid_user(client):
     user_data = {
-        "username": "testuser",
+        "username": "testuser1",
         "firstname": "test",
         "lastname": "Tester",
-        "email": "test@example.com",
+        "email": "test1@example.com",
         "password": "SuperSecret123",
         "subscription": "basic",
     }
     response = client.post("/signup", json=user_data)
-    assert response.status_code == 200
+    assert response.status_code == 201
 
 
 def test_signup_missing_keys(client):

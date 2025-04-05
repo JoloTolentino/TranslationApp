@@ -4,13 +4,14 @@ from server.schemas.ModelSchemaValidator import (
     SignupSchemaValidator,
 )
 from server.utils.santize import clean_username, clean_email, clean_name
-from server.models import USER, SUBSCRIPTIONS, ATTEMPTS
+from server.models import USER, SUBSCRIPTIONS, ATTEMPTS,Tiers
 from server.config import BAN_INTERVAL
-from server.extensions import logging
+from server.extensions import logger
 from server.utils.database import Postgres
 from flask import Blueprint, request, jsonify
 from flask_login import login_user, logout_user, login_required
 from pprint import pprint
+import json
 import uuid
 import pdb
 
@@ -53,9 +54,13 @@ def login():
 
 @auth.route("/signup", methods=["POST"])
 def signup():
-    data = request.get_json()
+    data = json.loads(request.get_json()["body"])
 
+    #generate uuid  per user 
     data["uuid"] = str(uuid.uuid4())
+
+
+    logger.info(f'Signup for :{data["uuid"]} in progress')
     subscription = data.pop("subscription")
 
     validator = SignupSchemaValidator(data)
@@ -63,18 +68,18 @@ def signup():
     raw_password = data.pop("password")
     errors = validator.error
     if errors:
-        logging.info(errors)
+        logger.info(errors)
         return jsonify(errors), 400
 
     # sanitize inputs
-    logging.debug(f"User Data : {pprint(data)}")
+    logger.info(f"User Data : {pprint(data)}")
 
     data["username"] = clean_username(data["username"])
     data["firstname"] = clean_name(data["firstname"])
     data["lastname"] = clean_name(data["lastname"])
     data["email"] = clean_email(data["email"])
 
-    logging.info(f'Processing user :[{data["uuid"]}]')
+    logger.info(f'Processing user :[{data["uuid"]}]')
 
     # create entries in the db
     new_user = USER(**data)
@@ -93,10 +98,9 @@ def signup():
     services = {"primary": primary_service, "secondary": secondary_services}
 
     response, status_code = Postgres.add_dependent_services(services)
-    # primary_response, status_code = Postgres.add_services(primary_service)
-    # secondary_response,status_code = Postgres.add_services(secondary_services)
-    # response = {**primary_response,**secondary_response}
     response["subscription_status"] = subscription_status
+
+    pdb.set_trace()
     return jsonify(response), status_code
 
 

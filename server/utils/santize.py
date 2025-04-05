@@ -1,8 +1,6 @@
 import re
 import html
 
-# from server.models.Subscriptions import Tiers
-
 
 def clean_username(username: str) -> str:
     """Strip and remove non-alphanumeric characters (except underscores)."""

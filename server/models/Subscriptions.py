@@ -14,9 +14,12 @@ class Tiers(enum.Enum):
     @staticmethod
     def get_expiration(tier: str) -> timedelta:
         expiration_map = {
-            Tiers.FREE.value: None,
+            Tiers.FREE.value: timedelta(days=0),
+            Tiers.FREE: timedelta(days=0),
             Tiers.PRO.value: timedelta(days=365),
+            Tiers.PRO: timedelta(days=365),
             Tiers.ENTERPRISE.value: timedelta(days=365),
+            Tiers.ENTERPRISE: timedelta(days=365),
         }
         return expiration_map[tier]
 
@@ -24,6 +27,13 @@ class Tiers(enum.Enum):
     def get_tier_rank(tier: str) -> int:
         tier_map = {Tiers.FREE.value: 0, Tiers.PRO.value: 1, Tiers.ENTERPRISE.value: 2}
         return tier_map[tier]
+
+    @staticmethod
+    def get_tier(tier_val:str) -> Enum:
+        tier_map = {
+            tier.value : tier for tier in list(Tiers)
+        }
+        return tier_map.get(tier_val) if tier_map.get(tier_val) else Tiers.FREE
 
 
 class SUBSCRIPTIONS(db.Model):
@@ -48,6 +58,8 @@ class SUBSCRIPTIONS(db.Model):
     def subscribe_tier(self, tier: str) -> dict:
 
         tier = clean_tier(tier)
+        tier = Tiers.get_tier(tier)
+
         if tier is None:
             return {"error": "Invalid Tier"}
 
@@ -59,8 +71,12 @@ class SUBSCRIPTIONS(db.Model):
 
         if free_member or expired_membership:
             self.tier = tier
-            self.expiration = datetime.strftime(
-                datetime.today() + Tiers.get_expiration(self.tier), DATE_FMT
+            self.expiration = (
+                datetime.strftime(
+                    datetime.today() + Tiers.get_expiration(self.tier), DATE_FMT
+                )
+                if Tiers.get_expiration(self.tier)
+                else None
             )
 
             return {

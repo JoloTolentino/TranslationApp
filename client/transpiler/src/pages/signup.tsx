@@ -1,9 +1,9 @@
 
 
-
+import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
 import { Credentials,SignupPayload } from '../types/signup'
-
+//  toast.success('Signup successful! Redirecting...');
 import './styles/signup.css'
 
 function Signup(){
@@ -27,13 +27,14 @@ function Signup(){
 
 
     async function handleClick(label: string): Promise<void> {
-        const subscription = label;
+        const subscription = label.toLowerCase().split(' ')[0];
 
         const updatedCredentials = {
             ...credentials,
-            subscription,
+            'subscription':subscription,
         };
 
+        console.log(updatedCredentials)
         const payload: SignupPayload = {
             method: 'POST',
             headers: {
@@ -43,13 +44,33 @@ function Signup(){
         };
 
         try {
-            const response = await fetch(SIGNUP_URL, payload);
-            console.log('response:', response);
+            const response = await fetch(SIGNUP_URL, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(payload),
+            });
+          
+            if (response.status === 201) {
+              toast.success('succesful signup');
+            }
+          
+            if (!response.ok) {
+              throw new Error(`Status Code: ${response.status}`);
+            }
+          
             const data = await response.json();
             console.log('response data:', data);
-        } catch (err) {
-            console.error('Fetch error:', err);
-        }
+          
+          } catch (err) {
+            if (err instanceof Error) {
+              toast.error(err.message);
+            } else {
+              toast.error('An unexpected error occurred');
+            }
+          }
+          
 }
 
 
