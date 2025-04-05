@@ -91,6 +91,6 @@ class ATTEMPTS(db.Model):
             except ValueError:
                 return False
         return True
-    
+
     def as_dict(self):
         return {col.name: getattr(self, col.name) for col in self.__table__.columns}

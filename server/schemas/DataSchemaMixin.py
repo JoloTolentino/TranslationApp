@@ -10,15 +10,19 @@ class DataSchemaMixin:
 
     @property
     def error(self):
-        return getattr(self, "_error") if self._error['invalid_keys'] and self.error['missing_keys'] else None
+        return (
+            getattr(self, "_error")
+            if self._error["invalid_keys"] and self.error["missing_keys"]
+            else None
+        )
 
     @property
     def missing(self) -> list[str] | list[None]:
-        return getattr(self, "_missing", []) 
+        return getattr(self, "_missing", [])
 
     @property
     def invalid(self) -> list[str] | dict[None]:
-        return getattr(self, "_invalid",{}) 
+        return getattr(self, "_invalid", {})
 
     @valid.setter
     def valid(self, val: bool) -> None:
@@ -66,4 +70,3 @@ class DataSchemaMixin:
                 self._invalid["Additional Keys"].append({key: additional_key})
 
         self.error = self.get_invalid_keys().get_json()
-
