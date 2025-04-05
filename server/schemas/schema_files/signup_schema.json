@@ -38,14 +38,12 @@
       }
     },
     "required": [
-      "uuid",
       "firstname",
       "lastname",
       "email",
       "username",
-      "password",
-      "is_online"
+      "password"
     ],
-    "additionalProperties": false
+    "additionalProperties": true
   }
   

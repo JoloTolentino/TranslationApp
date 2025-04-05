@@ -54,23 +54,28 @@ def login():
 @auth.route("/signup", methods=["POST"])
 def signup():
     data = request.get_json()
-    validator = SignupSchemaValidator(data)
-    errors = validator.error
-    if errors:
-        return errors, 400
-
-    # sanitize inputs
-    raw_password = data.pop("password")
+    
+    data["uuid"] = str(uuid.uuid4())
     subscription = data.pop("subscription")
+    
+    validator = SignupSchemaValidator(data)
+    
+    raw_password = data.pop("password")
+    errors = validator.error
+    if errors:    
+        logging.info(errors)
+        return jsonify(errors), 400
 
-    # log everything except password and subscription tier
+    
+    # sanitize inputs
     logging.debug(f"User Data : {pprint(data)}")
 
+    
     data["username"] = clean_username(data["username"])
     data["firstname"] = clean_name(data["firstname"])
-    data["lastname"] = clean_name(data[""])
+    data["lastname"] = clean_name(data["lastname"])
     data["email"] = clean_email(data["email"])
-    data["uuid"] = str(uuid.uuid4())
+    
 
     logging.info(f'Processing user :[{data["uuid"]}]')
 
@@ -80,14 +85,27 @@ def signup():
     new_user_attempts = ATTEMPTS(uuid=data["uuid"])
     new_user_subscription = SUBSCRIPTIONS(uuid=data["uuid"])
     subscription_status = new_user_subscription.subscribe_tier(subscription)
-    services = {
-        "USER": new_user,
+    
+    primary_service = {
+        "USER": new_user
+    }
+    
+    secondary_services = {
         "ATTEMPTS": new_user_attempts,
         "SUBSCRIPTIONS": new_user_subscription,
     }
-    response, status_code = Postgres.add_services(services)
+
+    services = {
+        'primary': primary_service,
+        'secondary': secondary_services
+    }
+
+    response,status_code = Postgres.add_dependent_services(services)
+    # primary_response, status_code = Postgres.add_services(primary_service)
+    # secondary_response,status_code = Postgres.add_services(secondary_services)
+    # response = {**primary_response,**secondary_response}
     response["subscription_status"] = subscription_status
-    return response, status_code
+    return jsonify(response), status_code
 
 
 @auth.route("/logout")

@@ -6,7 +6,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class USER(UserMixin, db.Model):
-    """ """
 
     __tablename__ = "users"
     uuid = db.Column(db.String(50), primary_key=True)
@@ -27,8 +26,9 @@ class USER(UserMixin, db.Model):
     def update_last_login(self):
         self.last_login = datetime.now().isoformat()
 
-    def __repr__(self):
-        return f"User : {self.username}"
+    def as_dict(self):
+        return {col.name: getattr(self, col.name) for col in self.__table__.columns}
+ 
 
 
 class BANNED_USERS(db.Model):
@@ -39,6 +39,9 @@ class BANNED_USERS(db.Model):
     banned_at = db.Column(
         db.String(50), default=datetime.strftime(datetime.today(), DATE_FMT)
     )
+
+    def as_dict(self):
+        return {col.name: getattr(self, col.name) for col in self.__table__.columns}
 
     def __repr__(self):
         return f"Banned User: {self.uuid}"

@@ -1,17 +1,17 @@
 
 export interface Credentials {
-    Firstname:string,
-    Lastname:string, 
-    Username:string,
-    Password:string,
-    Email:string
+    firstname:string,
+    lastname:string, 
+    username:string,
+    password:string,
+    email:string
 }; 
 
 
-export interface SignupPayload extends Credentials{
-    method:string
-    headers:string,
-}
-
+export interface SignupPayload {
+    method: string;
+    headers: { [key: string]: string };
+    body: string;
+  }
 
 

@@ -41,6 +41,9 @@ class SUBSCRIPTIONS(db.Model):
 
     def reset_to_default(self) -> None:
         self.tier = Tiers.FREE
+    
+    def as_dict(self):
+        return {col.name: getattr(self, col.name) for col in self.__table__.columns}
 
     def subscribe_tier(self, tier: str) -> dict:
 
@@ -49,9 +52,10 @@ class SUBSCRIPTIONS(db.Model):
             return {"error": "Invalid Tier"}
 
         free_member = self.tier == Tiers.FREE
-        expired_membership = (
-            datetime.strptime(self.expiration, DATE_FMT) < datetime.today()
-        )
+        if self.expiration:
+            expired_membership = (
+                datetime.strptime(self.expiration, DATE_FMT) < datetime.today()
+            )
 
         if free_member or expired_membership:
             self.tier = tier
