@@ -59,7 +59,7 @@ function Login () :React.JSX.Element{
                 </>)
             }
             </div>
-          <form>
+          <form method='POST'>
             <div className='Credentials'>
                 <div>
                 <label>Username: </label>

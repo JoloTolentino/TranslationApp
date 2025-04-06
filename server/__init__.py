@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from flasgger import Swagger
 from server.routes import auth, v1
 from server.extensions import db, chroma_client, limiter, login_manager, logger
 from server.config import CONFIG
@@ -11,6 +12,7 @@ from jsonschema.exceptions import SchemaError
 def create_app(*args, **kwargs):
     logger.info("Creating App")
     app = Flask(__name__)
+    
     CORS(app, origins=["http://localhost:5173"], supports_credentials=True)
 
     app.config.from_object(CONFIG)
@@ -52,4 +54,5 @@ def create_app(*args, **kwargs):
     app.register_blueprint(auth)
     app.register_blueprint(v1)
 
+    Swagger(app)
     return app

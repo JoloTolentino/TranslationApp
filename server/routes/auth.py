@@ -8,6 +8,7 @@ from server.models import USER, SUBSCRIPTIONS, ATTEMPTS, Tiers
 from server.config import BAN_INTERVAL
 from server.extensions import logger
 from server.utils.database import Postgres
+from flasgger import swag_from
 from flask import Blueprint, request, jsonify
 from flask_login import login_user, logout_user, login_required
 from pprint import pprint
@@ -20,6 +21,17 @@ auth = Blueprint("auth", __name__)
 
 
 @auth.route("/login", methods=["POST"])
+@swag_from({
+    'tags': ['Login'],
+    'responses': {
+        200: {
+            'description': 'Generates a JWT token',
+        },
+        401:{
+            'description': 'Unauthorized User'
+        }
+    }
+})
 def login():
     data = request.get_json()
     validator = UsersSchemaValidator(data)
@@ -53,9 +65,17 @@ def login():
 
 
 @auth.route("/signup", methods=["POST"])
+@swag_from({
+    'tags': ['Signup'],
+    'responses': {
+        200: {
+            'description': 'Returns a success message',
+        }
+    }
+})
 def signup():
     data = request.get_json()
-    
+
     # generate uuid  per user
     data["uuid"] = str(uuid.uuid4())
 

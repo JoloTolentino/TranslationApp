@@ -20,6 +20,8 @@
 .form-actions{
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 
@@ -32,7 +34,14 @@
 }
 
 button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: 2px solid darkgray;
+    color: black;
+
+    height:40px;
+    width: 20vw;
 }
 
 .Redirect{
@@ -47,8 +56,13 @@ input[type='password'] {
     background-color: whitesmoke;
     border-radius: 3px;
     color: black;
+    width: 20vh;
 }
 
 .error span {
     color:#c00000;
+}
+
+.Redirect span{
+    color:black;
 }

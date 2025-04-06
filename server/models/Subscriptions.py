@@ -50,7 +50,7 @@ class SUBSCRIPTIONS(db.Model):
     def reset_to_default(self) -> None:
         self.tier = Tiers.FREE
 
-    def as_dict(self):
+    def as_dict(self) ->dict:
         return {col.name: getattr(self, col.name) for col in self.__table__.columns}
 
     def subscribe_tier(self, tier: str) -> dict:

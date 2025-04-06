@@ -3,7 +3,6 @@
 import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
 import { Credentials,SignupPayload } from '../types/signup'
-//  toast.success('Signup successful! Redirecting...');
 import './styles/signup.css'
 
 function Signup(){
@@ -44,40 +43,41 @@ function Signup(){
         };
 
         try {
-            console.log('test')
+            
             const response = await fetch(SIGNUP_URL,payload);
             
+
             const val = await response.json();
-            console.log(val)
-            console.log('jolo123')
+        
+            
             if (!response.ok) {
-                if (response.status === 409) {
-                  toast.error('Email is already registered.');
-                } else {
-                  throw new Error(`Status Code: ${response.status}`);
+                switch (response.status) {
+                    case 409:
+                        toast.error("Conflict: The request could not be completed due to a conflict.");
+                        
+                        break;
+            
+                    case 404:
+                        toast.error("Not Found: The requested resource was not found.");
+                        break;
+            
+                    case 500:
+                        toast.error("Server Error: Something went wrong on the server.");
+                        break;
+            
+                    default:
+                        toast.error(`Unexpected error: ${response.status}`);
                 }
-              }
-            // if (!response.ok) {
-            //     throw new Error(`Status Code: ${response.status}`);
-            //   }
+            }
 
 
-
-            if (response.status === 200) {
+            
+            if (response.status === 201) {
               toast.success('succesful signup');
             }
-            else{
-                console.log('jolo')
-                console.log(response)
-                toast.warn(`Status Codeczxcz: ${response.status}`)
-
-
-            }
+          
           
            
-          
-            // const data = await response.json();
-            // console.log('response data:', data);
           
           } catch (err) {
             if (err instanceof Error) {
@@ -111,7 +111,7 @@ function Signup(){
 
     return (
         <div className='SignUp'>
-            <form className="PersonalInfo">
+            <form className="PersonalInfo" method='POST'>
                 <h3>PERSONAL INFORMATION :</h3>
                 <div className='Firstname'>
                     <label>Firstname<span>*</span></label>
