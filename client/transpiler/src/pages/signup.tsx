@@ -44,24 +44,40 @@ function Signup(){
         };
 
         try {
-            const response = await fetch(SIGNUP_URL, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(payload),
-            });
-          
-            if (response.status === 201) {
+            console.log('test')
+            const response = await fetch(SIGNUP_URL,payload);
+            
+            const val = await response.json();
+            console.log(val)
+            console.log('jolo123')
+            if (!response.ok) {
+                if (response.status === 409) {
+                  toast.error('Email is already registered.');
+                } else {
+                  throw new Error(`Status Code: ${response.status}`);
+                }
+              }
+            // if (!response.ok) {
+            //     throw new Error(`Status Code: ${response.status}`);
+            //   }
+
+
+
+            if (response.status === 200) {
               toast.success('succesful signup');
             }
-          
-            if (!response.ok) {
-              throw new Error(`Status Code: ${response.status}`);
+            else{
+                console.log('jolo')
+                console.log(response)
+                toast.warn(`Status Codeczxcz: ${response.status}`)
+
+
             }
           
-            const data = await response.json();
-            console.log('response data:', data);
+           
+          
+            // const data = await response.json();
+            // console.log('response data:', data);
           
           } catch (err) {
             if (err instanceof Error) {

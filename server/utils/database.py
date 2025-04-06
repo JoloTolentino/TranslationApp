@@ -46,18 +46,18 @@ class Postgres:
             db.session.commit()
             logger.info("Commit successful.")
 
-            return {"message": "Records committed successfully"}, 201
+            return {"message": "Records committed successfully", "status": 201}
         except IntegrityError as e:
             db.session.rollback()
             logger.error("FAILED service values:")
             for name, service in services.items():
                 logger.info(f"{name}: {service.as_dict()}")
             logger.error(f"[DB] IntegrityError: {e}")
-            return {"error": "Database constraint violation"}, 409
+            return {"message": "Database constraint violation", "status": 409}
         except Exception as e:
             db.session.rollback()
             logger.error(f"[DB] Unexpected error: {e}")
-            return {"error": "Unexpected server error"}, 500
+            return {"message": "Unexpected server error", "status" : 500 }
 
     @staticmethod
     def add_dependent_services(services: dict[str, dict[str, Model]]) -> dict:
@@ -84,15 +84,15 @@ class Postgres:
             db.session.commit()
             logger.info("Commit successful.")
 
-            return {"message": "Records committed successfully"}, 201
+            return {"message": "Records committed successfully", "status": 201}
         except IntegrityError as e:
             db.session.rollback()
             logger.info("FAILED service values:")
             for name, service in services.items():
                 logger.info(f"{name}: {service}")
             logger.error(f"[DB] IntegrityError: {e}")
-            return {"error": "Database constraint violation"}, 409
+            return {"message": "Database constraint violation", "status": 409}
         except Exception as e:
             db.session.rollback()
             logger.error(f"[DB] Unexpected error: {e}")
-            return {"error": "Unexpected server error"}, 500
+            return {"message": "Unexpected server error", "status" : 500 }

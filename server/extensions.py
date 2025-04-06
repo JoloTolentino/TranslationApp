@@ -25,11 +25,16 @@ file_handler = logging.FileHandler(os.path.join(logs_dir, f"{__name__}.log"))
 file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(formatter)
 
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.DEBUG)  # Or INFO
+stream_handler.setFormatter(formatter)
+
 error_handler = logging.FileHandler(os.path.join(logs_dir, f"{__name__}_errors.log"))
 error_handler.setLevel(logging.ERROR)
 error_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 logger.addHandler(error_handler)
+logger.addHandler(stream_handler)
 
 
 CFG = configparser.ConfigParser()

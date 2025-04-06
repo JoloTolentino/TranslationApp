@@ -54,8 +54,8 @@ def login():
 
 @auth.route("/signup", methods=["POST"])
 def signup():
-    data = json.loads(request.get_json()["body"])
-
+    data = request.get_json()
+    
     # generate uuid  per user
     data["uuid"] = str(uuid.uuid4())
 
@@ -69,6 +69,8 @@ def signup():
     if errors:
         logger.info(errors)
         return jsonify(errors), 400
+    
+   
 
     # sanitize inputs
     logger.info(f"User Data : {pprint(data)}")
@@ -96,11 +98,9 @@ def signup():
 
     services = {"primary": primary_service, "secondary": secondary_services}
 
-    response, status_code = Postgres.add_dependent_services(services)
-    response["subscription_status"] = subscription_status
-
-    pdb.set_trace()
-    return jsonify(response), status_code
+    result = Postgres.add_dependent_services(services)
+    logger.info(f'response : {result}')
+    return jsonify(result), result['status']
 
 
 @auth.route("/logout")
